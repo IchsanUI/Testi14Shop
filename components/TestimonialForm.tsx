@@ -112,33 +112,37 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
 
   const progressPct = ((step - 1) / (STEPS.length - 1)) * 100
 
+  // ── Label styles shared across all inputs ──
+  const labelClass = 'block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider'
+  const inputClass = 'w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:bg-white/10 transition-colors'
+  const textareaClass = 'w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:bg-white/10 transition-colors resize-none'
+
   return (
-    <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+
       {/* ── ERROR ── */}
       {error && (
-        <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2">
-          <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <div className="mx-4 mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2">
+          <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
-          <p className="text-xs text-red-600">{error}</p>
+          <p className="text-xs text-red-300">{error}</p>
         </div>
       )}
 
       {/* ── STEP HEADER ── */}
       <div className="px-5 pt-5 pb-4">
-        {/* Progress bar + label */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
             Step {step} / {STEPS.length}
           </span>
-          <span className="text-xs font-medium text-black">
+          <span className="text-xs font-medium text-yellow-400">
             {STEPS.find((s) => s.num === step)?.label}
           </span>
         </div>
-        {/* Bar */}
-        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-black rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-yellow-400 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -149,25 +153,21 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
 
         {/* STEP 1 — Data Diri */}
         {step === 1 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Nama Lengkap <span className="text-red-400">*</span>
-              </label>
+              <label className={labelClass}>Nama Lengkap <span className="text-red-400">*</span></label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Contoh: Budi Santoso"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                No WhatsApp <span className="text-red-400">*</span>
-              </label>
+              <label className={labelClass}>No WhatsApp <span className="text-red-400">*</span></label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">+62</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-medium">+62</span>
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -177,32 +177,28 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                     setFormData({ ...formData, whatsapp: '0' + raw })
                   }}
                   placeholder="8123456789"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors"
+                  className={`${inputClass} pl-10`}
                 />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Email <span className="text-gray-400 font-normal">(opsional)</span>
-              </label>
+              <label className={labelClass}>Email <span className="text-gray-500 font-normal normal-case">(opsional)</span></label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="email@contoh.com"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Alamat <span className="text-gray-400 font-normal">(opsional)</span>
-              </label>
+              <label className={labelClass}>Alamat <span className="text-gray-500 font-normal normal-case">(opsional)</span></label>
               <textarea
                 rows={2}
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 placeholder="Jl. Raya No. 1, Surabaya"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors resize-none"
+                className={textareaClass}
               />
             </div>
           </div>
@@ -210,29 +206,25 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
 
         {/* STEP 2 — Transaksi */}
         {step === 2 && (
-          <div className="space-y-5 animate-fadeIn">
+          <div className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Berapa Kali Bertransaksi?
-              </label>
+              <label className={labelClass}>Berapa Kali Bertransaksi?</label>
               <select
                 value={formData.transactionCount}
                 onChange={(e) => setFormData({ ...formData, transactionCount: parseInt(e.target.value) || 1 })}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black focus:outline-none focus:border-black focus:bg-white transition-colors appearance-none"
+                className={`${inputClass} appearance-none`}
               >
-                <option value={1}>1 Kali</option>
+                <option value={1} className="bg-gray-900">1 Kali</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                  <option key={n} value={n}>{n} Kali</option>
+                  <option key={n} value={n} className="bg-gray-900">{n} Kali</option>
                 ))}
-                <option value={11}>Lebih dari 10 Kali</option>
+                <option value={11} className="bg-gray-900">Lebih dari 10 Kali</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Total Belanja Terakhir (Rp)
-              </label>
+              <label className={labelClass}>Total Belanja Terakhir (Rp)</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">Rp</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-medium">Rp</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -246,40 +238,40 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                       e.target.setSelectionRange(e.target.value.length, e.target.value.length)
                   }}
                   placeholder="0"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors"
+                  className={`${inputClass} pl-10`}
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-1.5">Transaksi terakhir Anda di 14Group</p>
+              <p className="text-xs text-gray-600 mt-1.5">Transaksi terakhir Anda di 14Group</p>
             </div>
           </div>
         )}
 
         {/* STEP 3 — Layanan */}
         {step === 3 && (
-          <div className="animate-fadeIn">
-            <p className="text-xs text-gray-400 mb-3">Pilih layanan yang digunakan (bisa lebih dari satu)</p>
+          <div>
+            <p className="text-xs text-gray-500 mb-3">Pilih layanan yang digunakan (bisa lebih dari satu)</p>
             <div className="grid grid-cols-1 gap-2">
               {SERVICES.map((svc) => {
                 const checked = formData.services.includes(svc.label)
                 return (
                   <label
                     key={svc.label}
-                    onClick={() => handleServiceToggle(svc.label)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all select-none ${
                       checked
-                        ? 'border-black bg-gray-50'
-                        : 'border-gray-200 bg-gray-50 hover:border-gray-400'
+                        ? 'border-yellow-400 bg-yellow-400/10'
+                        : 'border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/8'
                     }`}
+                    onClick={() => handleServiceToggle(svc.label)}
                   >
                     <span className="text-base">{svc.icon}</span>
-                    <span className={`flex-1 text-sm font-medium ${checked ? 'text-black' : 'text-gray-700'}`}>
+                    <span className={`flex-1 text-sm font-medium ${checked ? 'text-yellow-400' : 'text-gray-300'}`}>
                       {svc.label}
                     </span>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      checked ? 'border-black bg-black' : 'border-gray-300'
+                      checked ? 'border-yellow-400 bg-yellow-400' : 'border-white/25'
                     }`}>
                       {checked && (
-                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-2.5 h-2.5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
@@ -293,11 +285,9 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
 
         {/* STEP 4 — Testimoni */}
         {step === 4 && (
-          <div className="space-y-5 animate-fadeIn">
+          <div className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">
-                Rating Anda <span className="text-red-400">*</span>
-              </label>
+              <label className={labelClass}>Rating Anda <span className="text-red-400">*</span></label>
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -305,7 +295,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                     type="button"
                     onClick={() => setFormData({ ...formData, rating: star })}
                     className={`text-4xl transition-all duration-200 ${
-                      star <= formData.rating ? 'text-yellow-400 scale-110' : 'text-gray-200'
+                      star <= formData.rating ? 'text-yellow-400 scale-110' : 'text-gray-700'
                     }`}
                   >
                     ★
@@ -313,7 +303,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                 ))}
               </div>
               {formData.rating > 0 && (
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-yellow-400/80 mt-2">
                   {formData.rating === 5 ? 'Sangat puas! ⭐⭐⭐⭐⭐' :
                    formData.rating === 4 ? 'Puas ⭐⭐⭐⭐' :
                    formData.rating === 3 ? 'Cukup ⭐⭐⭐' :
@@ -322,18 +312,16 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
               )}
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                Pesan Testimoni <span className="text-red-400">*</span>
-              </label>
+              <label className={labelClass}>Pesan Testimoni <span className="text-red-400">*</span></label>
               <textarea
                 rows={5}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Ceritakan pengalaman Anda belanja di 14Group..."
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:bg-white transition-colors resize-none"
+                className={textareaClass}
               />
               <div className="flex justify-end mt-1">
-                <span className={`text-xs ${formData.message.length > 200 ? 'text-amber-500' : 'text-gray-400'}`}>
+                <span className={`text-xs ${formData.message.length > 200 ? 'text-amber-400' : 'text-gray-600'}`}>
                   {formData.message.length} / 500
                 </span>
               </div>
@@ -343,14 +331,12 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
 
         {/* STEP 5 — Upload Foto + Ringkasan */}
         {step === 5 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4">
             {/* Upload */}
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">
-                Upload Foto <span className="text-gray-400 font-normal">(opsional)</span>
-              </label>
+              <label className={labelClass}>Upload Foto <span className="text-gray-500 font-normal normal-case">(opsional)</span></label>
               {formData.photo ? (
-                <div className="relative rounded-xl overflow-hidden border-2 border-gray-200">
+                <div className="relative rounded-xl overflow-hidden border-2 border-white/10">
                   <img
                     src={formData.photo}
                     alt="Preview"
@@ -359,7 +345,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, photo: null })}
-                    className="absolute top-2 right-2 bg-black/60 hover:bg-black text-white text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
+                    className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -368,12 +354,12 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors bg-gray-50/50">
-                  <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <label className="flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-white/10 rounded-xl cursor-pointer hover:border-yellow-400/50 hover:bg-white/5 transition-colors bg-white/5/50">
+                  <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-500">Tap untuk upload foto</span>
-                  <span className="text-xs text-gray-400">PNG, JPG, GIF maks. 5MB</span>
+                  <span className="text-sm font-medium text-gray-400">Tap untuk upload foto</span>
+                  <span className="text-xs text-gray-600">PNG, JPG, GIF maks. 5MB</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -385,8 +371,8 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
             </div>
 
             {/* Ringkasan */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Ringkasan</h3>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Ringkasan</h3>
               <div className="space-y-2">
                 {[
                   { label: 'Nama', value: formData.name },
@@ -401,8 +387,8 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
                   },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-2">
-                    <span className="text-xs text-gray-400 w-20 flex-shrink-0 pt-0.5">{item.label}</span>
-                    <span className="text-xs font-medium text-black flex-1 leading-relaxed">{item.value}</span>
+                    <span className="text-xs text-gray-500 w-20 flex-shrink-0 pt-0.5">{item.label}</span>
+                    <span className="text-xs font-medium text-white flex-1 leading-relaxed">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -417,7 +403,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
           <button
             type="button"
             onClick={handleBack}
-            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 border-white/10 text-gray-400 text-sm font-semibold hover:border-white/25 hover:text-white active:bg-white/5 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -429,7 +415,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
           type="button"
           onClick={step < 5 ? handleNext : handleSubmit}
           disabled={!isStepValid() || isSubmitting}
-          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-black text-white text-sm font-bold hover:bg-gray-800 active:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-yellow-400 text-black text-sm font-bold hover:bg-yellow-300 active:bg-yellow-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting ? (
             <>
