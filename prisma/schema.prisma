@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("DATABASE_URL")
+}
+
+// UserRole values: "ADMIN" or "SUPER_ADMIN"
+
+model RedeemCode {
+  id            String   @id @default(cuid())
+  code          String   @unique // 6-digit code e.g. "XK7M2P"
+  testimonialId String   // which approved testimonial this code belongs to
+  used          Boolean  @default(false)
+  usedAt        DateTime?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+
+  @@index([code])
+  @@index([testimonialId])
+}
+
+model Testimonial {
+  id                    String    @id @default(cuid())
+  name                  String
+  whatsapp              String
+  email                 String?
+  address               String?
+  transactionCount      Int       @default(1)  // berapa kali bertransaksi
+  lastTransactionAmount Int       @default(0)  // total belanja terakhir
+  services              String
+  rating                Int
+  message               String
+  photo                 String?
+  voucher               String?
+  voucherId             String?
+  barcode               String?
+  voucherUsed           Boolean   @default(false)
+  voucherUsedAt         DateTime?
+  approved              Boolean   @default(false)
+  featured             Boolean   @default(false) // shown on landing page carousel
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([approved])
+  @@index([voucherId])
+  @@index([barcode])
+}
+
+model VoucherRedeem {
+  id            String   @id @default(cuid())
+  testimonialId String
+  voucherCode  String
+  barcode      String   @unique
+  redeemedAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([testimonialId])
+  @@index([voucherCode])
+}
+
+model Voucher {
+  id               String   @id @default(cuid())
+  name             String
+  code             String   @unique
+  value            Int
+  valueType        String   @default("percentage") // "percentage" or "fixed"
+  minPurchase      BigInt   @default(0) // minimum purchase amount in rupiah
+  quota            Int
+  used             Int      @default(0)
+  transactionCount Int      @default(0) // jumlah transaksi yang dilakukan dengan voucher ini
+  probability      Int      // 0-100, chance to get this voucher
+  active           Boolean  @default(true)
+  barcode          String?  // barcode identifier for verification
+  expiryDays       Int      @default(7) // days until voucher expires
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([active])
+  @@index([barcode])
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  password      String        // hashed with bcrypt
+  role          String        @default("ADMIN") // "ADMIN" or "SUPER_ADMIN"
+  tokenVersion  Int           @default(0)       // increment to revoke all sessions
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  logs          ActivityLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  role        String   // Store role for historical accuracy
+  action      String   // e.g., "redeem_voucher", "create_voucher", "approve_testimonial"
+  description String   // Detailed description of the action
+  metadata    String?  // JSON string for additional context
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
