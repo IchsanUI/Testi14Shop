@@ -17,7 +17,6 @@ export default function CustomerCarousel() {
   const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
-  const [lightbox, setLightbox] = useState<string | null>(null)
   const [direction, setDirection] = useState<'left' | 'right' | null>(null)
 
   useEffect(() => {
@@ -83,39 +82,10 @@ export default function CustomerCarousel() {
 
   return (
     <>
-      {/* ── Lightbox ── */}
-      {lightbox && (
-        <div
-          className="fixed inset-0 bg-black/95 flex items-center justify-center z-[9999] cursor-zoom-out"
-          onClick={() => setLightbox(null)}
-          style={{ animation: 'fadeIn 0.2s ease' }}
-        >
-          <button
-            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
-            onClick={() => setLightbox(null)}
-          >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          <img
-            src={lightbox}
-            alt="Preview foto"
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl cursor-default"
-            style={{ animation: 'scaleIn 0.25s ease' }}
-            onClick={(e) => e.stopPropagation()}
-          />
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-sm">
-            Tekan Escape atau klik luar untuk menutup
-          </p>
-        </div>
-      )}
-
       <div
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onKeyDown={(e) => {
-          if (e.key === 'Escape') setLightbox(null)
           if (e.key === 'ArrowLeft') goTo(currentIndex - 1, 'left')
           if (e.key === 'ArrowRight') goTo(currentIndex + 1, 'right')
         }}
@@ -152,23 +122,14 @@ export default function CustomerCarousel() {
             }}
           >
             <div
-              className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl cursor-zoom-in transition-shadow duration-300 hover:shadow-2xl"
-              onClick={() => setLightbox(photos[currentIndex].photo!)}
+              className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl transition-shadow duration-300 hover:shadow-2xl"
             >
-              <div className="h-80 md:h-96 overflow-hidden bg-gray-100 relative">
+              <div className="h-80 md:h-96 overflow-hidden bg-gray-100">
                 <img
                   src={photos[currentIndex].photo!}
                   alt={`Foto ${photos[currentIndex].name}`}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
-                {/* Overlay hint */}
-                <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black/50 rounded-full p-3">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                    </svg>
-                  </div>
-                </div>
               </div>
               {/* Info */}
               <div className="p-5">
@@ -243,19 +204,8 @@ export default function CustomerCarousel() {
           )}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-3">{currentIndex + 1} / {total} foto · klik foto untuk memperbesar</p>
+        <p className="text-center text-xs text-gray-400 mt-3">{currentIndex + 1} / {total} foto</p>
       </div>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0 }
-          to { opacity: 1 }
-        }
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.9) }
-          to { opacity: 1; transform: scale(1) }
-        }
-      `}</style>
     </>
   )
 }
