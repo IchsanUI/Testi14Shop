@@ -11,13 +11,16 @@ import ActivityLogs from "@/components/admin/ActivityLogs";
 import UserManagement from "@/components/admin/UserManagement";
 import MediaManagement from "@/components/admin/MediaManagement";
 
+import BannerManagement from "@/components/admin/BannerManagement";
+
 type TabType =
   | "testimonials"
   | "vouchers"
   | "verify"
   | "logs"
   | "users"
-  | "media";
+  | "media"
+  | "banners";
 
 type SessionUser = {
   id: string;
@@ -101,7 +104,7 @@ export default function AdminPage() {
             </div>
 
             {/* User Info & Logout */}
-            {/* <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <div className="text-right">
                 <p className="text-sm font-medium text-black">{user?.name}</p>
                 <p className="text-xs text-gray-500">
@@ -120,7 +123,7 @@ export default function AdminPage() {
               >
                 {logoutLoading ? "Logging out..." : "Logout"}
               </button>
-            </div> */}
+            </div>
           </div>
 
           {/* Tabs */}
@@ -155,6 +158,16 @@ export default function AdminPage() {
                 }`}
               >
                 Verifikasi Voucher
+              </button>
+              <button
+                onClick={() => setActiveTab("banners")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
+                  activeTab === "banners"
+                    ? "border-black text-black"
+                    : "border-transparent text-gray-400 hover:text-black hover:border-gray-300"
+                }`}
+              >
+                Banner
               </button>
               {isSuperAdmin && (
                 <>
@@ -204,6 +217,7 @@ export default function AdminPage() {
             <VoucherVerification />
           </div>
         )}
+        {activeTab === "banners" && <BannerManagement />}
         {activeTab === "media" && isSuperAdmin && <MediaManagement />}
         {activeTab === "logs" && isSuperAdmin && <ActivityLogs />}
         {activeTab === "users" && isSuperAdmin && <UserManagement />}

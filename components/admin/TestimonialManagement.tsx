@@ -52,6 +52,7 @@ export default function TestimonialManagement() {
   const [error, setError] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [showCodeModal, setShowCodeModal] = useState(false)
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null)
   const [generatedCode, setGeneratedCode] = useState<{ code: string; customer: string; whatsapp?: string } | null>(null)
 
   // ── Filter & search state
@@ -436,6 +437,12 @@ export default function TestimonialManagement() {
                     </td>
                     {/* Aksi */}
                     <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => setSelectedTestimonial(t)}
+                        className="text-blue-600 hover:text-blue-900 mr-3"
+                      >
+                        Detail
+                      </button>
                       {actionLoading === t.id ? (
                         <div className="inline-flex items-center">
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
@@ -525,10 +532,13 @@ export default function TestimonialManagement() {
 
       {/* ── Code Modal ── */}
       {showCodeModal && generatedCode && (() => {
-        const waNumber = generatedCode.whatsapp?.replace(/[^0-9]/g, '') ?? ''
-        const waLink = waNumber
-          ? `https://wa.me/${waNumber}?text=Halo%20${encodeURIComponent(generatedCode.customer)}!%0A%0AKode%20Redeem%20Voucher%20Anda%3A%20%22${generatedCode.code}%22%0A%0ASilakan%20buka%20halaman%20ini%20untuk%20menukar%20voucher%3A%20https%3A%2F%2F14group.test%2Fredeem%0A%0AKode%20berlaku%2024%20jam.%20Terima%20kasih!`
-          : null
+        // Strip non-digits, then ensure it starts with 62 (Indonesia country code)
+        let raw = (generatedCode.whatsapp ?? '').replace(/[^0-9]/g, '')
+        if (raw.startsWith('0')) raw = '62' + raw.slice(1)
+        const waMsg = encodeURIComponent(
+          `Hai Sobat14, ${generatedCode.customer}! 🎉\n\nTestimoni kamu sudah kami terima dan disetujui! Terima kasih sudah berbagi pengalamanmu bersama 14Group. 💚\n\nSebagai apresiasi, kamu punya hadiah spesial! Kode redeem voucher kamu:\n\n🔑 ${generatedCode.code}\n\nCara klaimnya gampang banget:\n1. Buka link ini: https://14group.test/redeem\n2. Masukkan kode di atas\n3. Voucher langsung aktif! 🎁\n\n⚠️ Catatan penting:\n• Kode cuma berlaku 24 jam ya\n• Hanya bisa dipakai 1x\n• Screenshot kode biar aman\n\nKalau ada pertanyaan atau butuh bantuan, chat aja nomor ini. Sampai ketemu di toko ya! 👋\n\nSalam,\nTim 14Group ✨`
+        );
+        const waLink = raw.length >= 10 ? `https://wa.me/${raw}?text=${waMsg}` : null;
 
         return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -577,6 +587,156 @@ export default function TestimonialManagement() {
         </div>
         )
       })()}
+
+      {/* ── Detail Modal ── */}
+      {selectedTestimonial && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-xl font-bold text-black">Detail Testimoni</h3>
+              <button
+                onClick={() => setSelectedTestimonial(null)}
+                className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Photo */}
+            {selectedTestimonial.photo && (
+              <div className="mb-4">
+                <img
+                  src={selectedTestimonial.photo}
+                  alt="Foto testimoni"
+                  className="w-full h-48 object-cover rounded-xl border border-gray-200"
+                />
+              </div>
+            )}
+
+            {/* Info grid */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {[
+                { label: 'Nama', value: selectedTestimonial.name },
+                { label: 'WhatsApp', value: selectedTestimonial.whatsapp },
+                { label: 'Email', value: selectedTestimonial.email || '-' },
+                { label: 'Alamat', value: selectedTestimonial.address || '-' },
+                { label: 'Layanan', value: selectedTestimonial.services },
+                { label: 'Jumlah Transaksi', value: `${selectedTestimonial.transactionCount}x` },
+                { label: 'Total Belanja', value: `Rp ${selectedTestimonial.lastTransactionAmount.toLocaleString('id-ID')}` },
+                { label: 'Tanggal', value: new Date(selectedTestimonial.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) },
+              ].map((row) => (
+                <div key={row.label} className="bg-gray-50 rounded-xl p-3">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">{row.label}</p>
+                  <p className="text-sm font-semibold text-black">{row.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Rating */}
+            <div className="mb-4 bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-2">Rating</p>
+              <div className="flex space-x-0.5">
+                {renderStars(selectedTestimonial.rating)}
+                <span className="ml-2 text-sm font-bold text-black">{selectedTestimonial.rating}/5</span>
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="mb-4 bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-2">Pesan Testimoni</p>
+              <p className="text-sm text-black leading-relaxed">{selectedTestimonial.message}</p>
+            </div>
+
+            {/* Voucher info */}
+            <div className="mb-4 bg-green-50 border border-green-200 rounded-xl p-3">
+              <p className="text-xs text-green-700 uppercase tracking-wide font-medium mb-2">Voucher</p>
+              <div className="space-y-1.5">
+                {selectedTestimonial.voucher ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-green-800">{selectedTestimonial.voucher}</span>
+                      {voucherStatusBadge(selectedTestimonial.voucherStatusLabel)}
+                    </div>
+                    {selectedTestimonial.redeemCode?.code && (
+                      <p className="text-xs text-green-600 font-mono">Kode: {selectedTestimonial.redeemCode.code}</p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">Belum ada voucher</p>
+                )}
+              </div>
+            </div>
+
+            {/* Approval status */}
+            <div className="mb-5 bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-2">Status</p>
+              <div className="flex items-center gap-2">
+                {selectedTestimonial.approved ? (
+                  <>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Disetujui</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="space-y-2">
+              {!selectedTestimonial.approved ? (
+                <>
+                  <button
+                    onClick={async () => {
+                      await handleApprove(selectedTestimonial.id)
+                      setSelectedTestimonial(null)
+                    }}
+                    disabled={!!actionLoading}
+                    className="w-full px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 font-bold transition-colors"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await handleReject(selectedTestimonial.id)
+                      setSelectedTestimonial(null)
+                    }}
+                    disabled={!!actionLoading}
+                    className="w-full px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 disabled:opacity-50 font-bold transition-colors"
+                  >
+                    Tolak
+                  </button>
+                </>
+              ) : selectedTestimonial.voucher ? (
+                <button className="w-full px-6 py-3 bg-gray-100 text-gray-500 rounded-xl font-bold cursor-default">
+                  Selesai
+                </button>
+              ) : (
+                <button
+                  onClick={async () => {
+                    await handleGenerateCode(selectedTestimonial.id)
+                    setSelectedTestimonial(null)
+                  }}
+                  disabled={!!actionLoading}
+                  className="w-full px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 font-bold transition-colors"
+                >
+                  {selectedTestimonial.redeemCode?.used ? 'Buat Kode Ulang' : 'Buat Kode'}
+                </button>
+              )}
+              <button
+                onClick={() => setSelectedTestimonial(null)}
+                className="w-full px-6 py-2.5 text-gray-500 hover:text-black text-sm font-medium transition-colors"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

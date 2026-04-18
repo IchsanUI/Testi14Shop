@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -31,9 +31,8 @@ export default function AdminLoginPage() {
         throw new Error(data.error || 'Login gagal')
       }
 
-      // Redirect to admin dashboard
-      router.push('/admin')
-      router.refresh()
+      // Redirect to admin dashboard (full reload to ensure session cookie is available)
+      window.location.href = '/admin';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan')
     } finally {

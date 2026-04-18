@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import TestimonialsDisplay from "@/components/TestimonialsDisplay";
 import CustomerCarousel from "@/components/CustomerCarousel";
+import HeroSlideshow from "@/components/HeroSlideshow";
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || "6281234567890";
 
@@ -136,15 +137,38 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-20 lg:py-0">
             {/* Left: Text */}
             <div>
-              <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-black mb-6 leading-[1.1] tracking-tight">
                 <span className="hero-line">
-                  <span className="hero-line-inner">Find Your</span>
+                  <span
+                    className="hero-line-inner bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent"
+                    style={{ WebkitTextFillColor: "transparent" }}
+                  >
+                    Find Your
+                  </span>
                 </span>
                 <span className="hero-line">
-                  <span className="hero-line-inner">Journey</span>
+                  <span
+                    className="hero-line-inner bg-gradient-to-r from-white via-gray-200 to-gray-500 bg-clip-text text-transparent"
+                    style={{ WebkitTextFillColor: "transparent" }}
+                  >
+                    Journey
+                  </span>
                 </span>
                 <span className="hero-line relative">
-                  <span className="hero-line-inner text-yellow-400">Here</span>
+                  <span
+                    className="hero-line-inner"
+                    style={{
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      backgroundImage:
+                        "linear-gradient(135deg, #facc15 0%, #fbbf24 40%, #f59e0b 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitBoxDecorationBreak: "clone",
+                      filter: "drop-shadow(0 0 20px rgba(250,204,21,0.4))",
+                    }}
+                  >
+                    Here
+                  </span>
                   <span className="hero-underline absolute -bottom-2 left-0 w-full h-1.5 bg-yellow-400/30 rounded-full" />
                 </span>
               </h1>
@@ -208,46 +232,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Hero visual card */}
-            <div className="hidden lg:flex justify-center hero-card">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 text-center w-full max-w-sm">
-                <Image
-                  src="/logo-full.png"
-                  alt="14Group"
-                  width={160}
-                  height={54}
-                  className="h-14 w-auto mx-auto mb-6 brightness-0 invert"
-                />
-                <p className="text-sm text-gray-400 font-medium">
-                  Dekat Lampu Merah, Jl. Panglima Sudirman No.134
-                </p>
-                <p className="text-xs text-gray-600 mt-1">Gresik, Jawa Timur</p>
-                <div className="mt-6 flex justify-center">
-                  <svg
-                    className="w-10 h-10 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-xs text-gray-600 mt-2">
-                  Kunjungi kami hari ini
-                </p>
-              </div>
-            </div>
+            {/* Right: Hero slideshow */}
+            <HeroSlideshow />
           </div>
         </div>
 
@@ -273,20 +259,20 @@ export default function Home() {
       </section>
 
       {/* ─── USAHA LOGOS ─── */}
-      <section className="bg-black py-20 md:py-28">
+      <section className="bg-white py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-10 reveal">
-            <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">
+            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">
               Ekosistem Kami
             </p>
-            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-black leading-tight">
               Berbagai Usaha
               <br />
               dalam Satu Kelompok
             </h2>
           </div>
           <div className="flex justify-center reveal reveal-delay-2">
-            <div className="rounded-2xl overflow-hidden w-full max-w-3xl bg-white p-4">
+            <div className="rounded-2xl overflow-hidden w-full max-w-3xl bg-gray-50 border border-gray-100 p-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/logo-logo-14group.png"
@@ -299,45 +285,206 @@ export default function Home() {
             Mulai dari penjualan HP, tukar tambah, service, barbershop, hingga
             cafe — semua dalam naungan 14Group
           </p>
+
+          {/* Instagram Handles */}
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            {[
+              { handle: "@empatbelas.cell", label: "empatbelas.cell" },
+              { handle: "@iphoneshop.14", label: "iphoneshop.14" },
+              { handle: "@ifourteen.service", label: "ifourteen.service" },
+              { handle: "@barbershop.14Coffe", label: "barbershop.14Coffe" },
+            ].map((ig) => (
+              <a
+                key={ig.handle}
+                href={`https://instagram.com/${ig.label}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-black/5 hover:bg-black/10 border border-gray-200 hover:border-gray-300 rounded-full text-sm text-black font-medium transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+                {ig.handle}
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* divider */}
-      <div className="h-px bg-gray-800" />
+      <div className="h-px bg-gray-100" />
 
-      {/* ─── FACILITIES ─── */}
-      <section className="bg-white py-20 md:py-28">
+      {/* ─── PILIH LAYANAN ─── */}
+      <section className="bg-black py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-12 reveal">
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">
-              Layanan Kami
+          <div className="text-center mb-12 reveal">
+            <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">
+              Kunjungi
             </p>
-            <h2 className="text-4xl md:text-5xl font-black text-black leading-tight">
-              Fasilitas Lengkap
+            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+              Pilih Layanan
               <br />
-              untuk Anda
+              yang Anda Butuhkan
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {facilities.map((f, i) => (
-              <div
-                key={f.title}
-                className={`reveal reveal-delay-${Math.min(i + 1, 6)} bg-white border border-gray-100 rounded-2xl p-6 text-center transition-all hover:border-black hover:shadow-lg hover:-translate-y-0.5 cursor-default group`}
-              >
-                <div className="flex items-center justify-center w-14 h-14 bg-black rounded-2xl mx-auto mb-5 group-hover:bg-yellow-400 transition-colors">
-                  <div className="text-white group-hover:text-black transition-colors">
-                    {f.icon}
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 reveal reveal-delay-2">
+            {/* Beli Handphone */}
+            <a
+              href="/services/phoneshop"
+              className="group relative bg-white/5 border border-white/10 hover:border-yellow-400/50 rounded-2xl p-8 text-center transition-all duration-300 hover:bg-white/10 hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-16 h-16 bg-yellow-400/10 group-hover:bg-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-colors">
+                  <svg
+                    className="w-8 h-8 text-yellow-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
                 </div>
-                <h3 className="font-bold text-sm text-black mb-1.5">
-                  {f.title}
+                <h3 className="text-white font-black text-lg mb-2">
+                  Beli Handphone
                 </h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  {f.desc}
+                <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                  HP baru & second berkualitas
+                  <br />
+                  dengan harga terbaik
                 </p>
+                <span className="inline-flex items-center gap-1 text-yellow-400 text-sm font-semibold">
+                  Kunjungi
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
               </div>
-            ))}
+            </a>
+
+            {/* Service Handphone */}
+            <a
+              href="/services/service"
+              className="group relative bg-white/5 border border-white/10 hover:border-yellow-400/50 rounded-2xl p-8 text-center transition-all duration-300 hover:bg-white/10 hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-16 h-16 bg-yellow-400/10 group-hover:bg-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-colors">
+                  <svg
+                    className="w-8 h-8 text-yellow-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-white font-black text-lg mb-2">
+                  Service Handphone
+                </h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                  Perbaikan profesional
+                  <br />
+                  semua tipe & brand
+                </p>
+                <span className="inline-flex items-center gap-1 text-yellow-400 text-sm font-semibold">
+                  Kunjungi
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </a>
+
+            {/* Barbershop */}
+            <a
+              href="/services/barbershop"
+              className="group relative bg-white/5 border border-white/10 hover:border-yellow-400/50 rounded-2xl p-8 text-center transition-all duration-300 hover:bg-white/10 hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-16 h-16 bg-yellow-400/10 group-hover:bg-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-colors">
+                  <svg
+                    className="w-8 h-8 text-yellow-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-white font-black text-lg mb-2">
+                  Barbershop
+                </h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                  Gaya rambut & perawatan
+                  <br />
+                  pria profesional
+                </p>
+                <span className="inline-flex items-center gap-1 text-yellow-400 text-sm font-semibold">
+                  Kunjungi
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </a>
           </div>
         </div>
       </section>
@@ -442,7 +589,7 @@ export default function Home() {
                 </div>
               </div>
               <a
-                href="https://maps.google.com/?q=-7.170131155428334,112.65387677384109"
+                href="https://maps.app.goo.gl/acAiQap4fxuyMdTQA"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-3 bg-black text-white font-bold text-sm rounded-xl hover:bg-gray-800 transition-colors"
@@ -468,7 +615,7 @@ export default function Home() {
             <div className="lg:col-span-3 reveal reveal-delay-2">
               <div className="rounded-2xl overflow-hidden shadow-lg border-2 border-gray-100 h-72 md:h-80">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.5!2d112.6518!3d-7.1701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMTAnMTMuOCJTIDExMsKwMzknMDQuOCJF!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+                  src="https://maps.google.com/maps?q=-7.1700976255156075,112.6537869682405&hl=id&z=16&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -701,7 +848,7 @@ export default function Home() {
                     />
                   </svg>
                   <span className="text-gray-400 text-sm">
-                    +62 8xx-xxxx-xxxx
+                    +62 822-4500-0939
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
