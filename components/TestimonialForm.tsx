@@ -118,11 +118,11 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
   const textareaClass = 'w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:bg-white/10 transition-colors resize-none'
 
   return (
-    <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+    <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl flex flex-col max-h-[calc(100vh-160px)]">
 
       {/* ── ERROR ── */}
       {error && (
-        <div className="mx-4 mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2">
+        <div className="mx-4 mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2 flex-shrink-0">
           <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
@@ -131,7 +131,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
       )}
 
       {/* ── STEP HEADER ── */}
-      <div className="px-5 pt-5 pb-4">
+      <div className="px-5 pt-5 pb-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
             Step {step} / {STEPS.length}
@@ -148,8 +148,8 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
         </div>
       </div>
 
-      {/* ── STEP CONTENT ── */}
-      <div className="px-5 pb-4 min-h-[360px]">
+      {/* ── STEP CONTENT (scrollable) ── */}
+      <div className="px-5 pb-4 flex-1 min-h-0 overflow-y-auto">
 
         {/* STEP 1 — Data Diri */}
         {step === 1 && (
@@ -398,7 +398,7 @@ export default function TestimonialForm({ onSubmit }: TestimonialFormProps) {
       </div>
 
       {/* ── NAV BUTTONS ── */}
-      <div className="px-5 pb-5 flex gap-3">
+      <div className="px-5 pb-5 flex gap-3 flex-shrink-0">
         {step > 1 && (
           <button
             type="button"

@@ -90,7 +90,7 @@ export default function CustomerPage() {
   }
 
   return (
-    <div className="h-screen bg-black flex flex-col overflow-hidden">
+    <div className="h-screen bg-black flex flex-col">
       {/* ── HEADER ── */}
       <header className="flex-shrink-0 px-4 pt-4 pb-3">
         <div className="max-w-xl mx-auto flex items-center justify-between">
