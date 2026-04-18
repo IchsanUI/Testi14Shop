@@ -86,14 +86,9 @@ export default function CustomerCarousel() {
       {/* ── Lightbox ── */}
       {lightbox && (
         <div
-          className="fixed inset-0 flex items-center justify-center z-[9999] cursor-zoom-out"
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-[9999] cursor-zoom-out"
           onClick={() => setLightbox(null)}
-          style={{
-            backgroundColor: 'rgba(0,0,0,0.88)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            animation: 'fadeIn 0.2s ease',
-          }}
+          style={{ animation: 'fadeIn 0.2s ease' }}
         >
           <button
             className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
