@@ -17,6 +17,8 @@ export default function CustomerCarousel() {
   const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [lightbox, setLightbox] = useState<string | null>(null)
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null)
 
   useEffect(() => {
     fetchTestimonials()
@@ -39,27 +41,29 @@ export default function CustomerCarousel() {
   const photos = testimonials.filter((t) => t.photo)
   const total = photos.length
 
-  const goTo = useCallback((idx: number) => {
+  const goTo = useCallback((idx: number, dir: 'left' | 'right' = 'right') => {
     if (total === 0) return
-    setCurrentIndex(((idx % total) + total) % total)
+    const newIdx = ((idx % total) + total) % total
+    setDirection(dir)
+    setCurrentIndex(newIdx)
+    // reset direction after animation
+    setTimeout(() => setDirection(null), 600)
   }, [total])
 
   useEffect(() => {
     if (isPaused || total === 0) return
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % total)
+      goTo(currentIndex + 1, 'right')
     }, 4000)
     return () => clearInterval(timer)
-  }, [isPaused, total])
+  }, [isPaused, total, currentIndex, goTo])
 
-  const renderStars = (rating: number) =>
-    Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-200'}>★</span>
-    ))
+  const prevIdx = (currentIndex - 1 + total) % total
+  const nextIdx = (currentIndex + 1) % total
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-72">
         <div className="w-8 h-8 border-2 border-t-black rounded-full animate-spin" />
       </div>
     )
@@ -67,7 +71,7 @@ export default function CustomerCarousel() {
 
   if (photos.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center px-8">
+      <div className="flex flex-col items-center justify-center h-72 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center px-8">
         <svg className="w-14 h-14 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
@@ -77,89 +81,181 @@ export default function CustomerCarousel() {
     )
   }
 
-  // Visible items: prev, current, next (up to 3 cards)
-  const prevIdx = (currentIndex - 1 + total) % total
-  const nextIdx = (currentIndex + 1) % total
-
   return (
-    <div onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-
-      {/* Cards */}
-      <div className="flex items-center justify-center gap-4">
-        {/* Prev card (dimmed) */}
-        {total > 1 && (
-          <div className="hidden md:block flex-shrink-0 w-56 opacity-40 scale-95">
-            <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-              <div className="h-72 overflow-hidden bg-gray-100">
-                <img src={photos[prevIdx].photo!} alt="" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Main card */}
-        <div className="flex-shrink-0 w-full max-w-md md:max-w-lg">
-          <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-            <div className="h-80 md:h-96 overflow-hidden bg-gray-100">
-              <img
-                src={photos[currentIndex].photo!}
-                alt={`Foto ${photos[currentIndex].name}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Next card (dimmed) */}
-        {total > 1 && (
-          <div className="hidden md:block flex-shrink-0 w-56 opacity-40 scale-95">
-            <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-              <div className="h-44 overflow-hidden bg-gray-100">
-                <img src={photos[nextIdx].photo!} alt="" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Navigation dots + counter */}
-      <div className="flex items-center justify-center gap-3 mt-8">
-        {total > 1 && (
+    <>
+      {/* ── Lightbox ── */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-[9999] cursor-zoom-out"
+          onClick={() => setLightbox(null)}
+          style={{ animation: 'fadeIn 0.2s ease' }}
+        >
           <button
-            onClick={() => goTo(currentIndex - 1)}
-            className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
+            onClick={() => setLightbox(null)}
           >
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        )}
+          <img
+            src={lightbox}
+            alt="Preview foto"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl cursor-default"
+            style={{ animation: 'scaleIn 0.25s ease' }}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-sm">
+            Tekan Escape atau klik luar untuk menutup
+          </p>
+        </div>
+      )}
 
-        <div className="flex items-center gap-1.5">
-          {photos.map((_, i) => (
+      <div
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setLightbox(null)
+          if (e.key === 'ArrowLeft') goTo(currentIndex - 1, 'left')
+          if (e.key === 'ArrowRight') goTo(currentIndex + 1, 'right')
+        }}
+        tabIndex={0}
+      >
+        {/* ── Cards ── */}
+        <div className="relative flex items-center justify-center gap-4 min-h-[380px] md:min-h-[440px]">
+
+          {/* Prev card */}
+          {total > 1 && (
+            <div
+              className="hidden md:flex flex-shrink-0 w-56 opacity-30 scale-90 select-none pointer-events-none"
+              style={{
+                transform: 'scale(0.88)',
+                opacity: 0.3,
+                transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease',
+              }}
+            >
+              <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                <div className="h-44 overflow-hidden bg-gray-100">
+                  <img src={photos[prevIdx].photo!} alt="" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Main card */}
+          <div
+            className="relative flex-shrink-0 w-full max-w-md md:max-w-lg z-10"
+            style={{
+              transform: direction === 'left' ? 'translateX(-24px) scale(0.97)' : direction === 'right' ? 'translateX(24px) scale(0.97)' : 'translateX(0) scale(1)',
+              opacity: 0.85,
+              transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease',
+            }}
+          >
+            <div
+              className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl cursor-zoom-in transition-shadow duration-300 hover:shadow-2xl"
+              onClick={() => setLightbox(photos[currentIndex].photo!)}
+            >
+              <div className="h-80 md:h-96 overflow-hidden bg-gray-100 relative">
+                <img
+                  src={photos[currentIndex].photo!}
+                  alt={`Foto ${photos[currentIndex].name}`}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+                {/* Overlay hint */}
+                <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black/50 rounded-full p-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              {/* Info */}
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-bold text-black">{photos[currentIndex].name}</p>
+                  <div className="flex text-yellow-400 text-sm">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <span key={i} className={i < photos[currentIndex].rating ? '' : 'text-gray-200'}>★</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                  &ldquo;{photos[currentIndex].message}&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Next card */}
+          {total > 1 && (
+            <div
+              className="hidden md:flex flex-shrink-0 w-56 opacity-30 scale-90 select-none pointer-events-none"
+              style={{
+                transform: 'scale(0.88)',
+                opacity: 0.3,
+                transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease',
+              }}
+            >
+              <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                <div className="h-44 overflow-hidden bg-gray-100">
+                  <img src={photos[nextIdx].photo!} alt="" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Navigation dots + controls ── */}
+        <div className="flex items-center justify-center gap-3 mt-8">
+          {total > 1 && (
             <button
-              key={i}
-              onClick={() => goTo(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === currentIndex ? 'w-6 h-2 bg-black' : 'w-2 h-2 bg-gray-300'
-              }`}
-            />
-          ))}
+              onClick={() => goTo(currentIndex - 1, 'left')}
+              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            >
+              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          <div className="flex items-center gap-1.5">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i, i > currentIndex ? 'right' : 'left')}
+                className={`rounded-full transition-all duration-300 ${
+                  i === currentIndex ? 'w-6 h-2 bg-black' : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+
+          {total > 1 && (
+            <button
+              onClick={() => goTo(currentIndex + 1, 'right')}
+              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            >
+              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
 
-        {total > 1 && (
-          <button
-            onClick={() => goTo(currentIndex + 1)}
-            className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
-          >
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        )}
+        <p className="text-center text-xs text-gray-400 mt-3">{currentIndex + 1} / {total} foto · klik foto untuk memperbesar</p>
       </div>
 
-      <p className="text-center text-xs text-gray-400 mt-3">{currentIndex + 1} / {total} foto</p>
-    </div>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0 }
+          to { opacity: 1 }
+        }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.9) }
+          to { opacity: 1; transform: scale(1) }
+        }
+      `}</style>
+    </>
   )
 }

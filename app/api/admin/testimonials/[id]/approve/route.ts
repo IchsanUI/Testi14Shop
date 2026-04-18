@@ -74,6 +74,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
         : 'Testimonial approved',
       testimonial,
       redeemCode,
+      whatsapp: existingTestimonial.whatsapp,
     })
   } catch (error) {
     console.error('Error approving testimonial:', error)

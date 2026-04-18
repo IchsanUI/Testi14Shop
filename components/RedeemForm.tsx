@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatDiscount, formatRupiahWithZero } from "@/lib/format";
-import BarcodeDisplay from "./BarcodeDisplay";
+import DownloadableVoucher from "@/components/DownloadableVoucher";
 import Link from "next/link";
 
 type RedeemResult = {
@@ -135,9 +134,9 @@ export default function RedeemForm() {
   // Success State
   if (success && result) {
     return (
-      <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
+      <div className="flex flex-col items-center gap-6">
         {/* Success Icon */}
-        <div className="text-center mb-5">
+        <div className="text-center">
           <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mx-auto mb-3">
             <svg
               className="w-7 h-7 text-white"
@@ -159,64 +158,18 @@ export default function RedeemForm() {
           </p>
         </div>
 
-        {/* Voucher Card */}
-        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-5 mb-5">
-          {/* Diskon Value */}
-          <div className="text-center mb-4">
-            <p className="text-4xl font-black text-black mb-1">
-              {formatDiscount(
-                result.value,
-                result.valueType as "percentage" | "fixed",
-              )}
-            </p>
-            <p className="text-xs text-gray-400 uppercase tracking-widest">
-              Diskon
-            </p>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-dashed border-gray-300 my-4" />
-
-          {/* Barcode Section */}
-          {result.barcode && (
-            <div className="mb-4">
-              <BarcodeDisplay value={result.barcode} width={2} height={60} />
-            </div>
-          )}
-
-          {/* Expiry */}
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>
-              Berlaku sampai{" "}
-              {new Date(result.expiryDate).toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-        </div>
-
-        {/* Instructions */}
-        <p className="text-xs text-gray-400 text-center mb-5">
-          Tunjukkan barcode ini ke kasir saat checkout untuk menggunakan voucher
-        </p>
+        {/* Downloadable Voucher Card */}
+        <DownloadableVoucher
+          code={result.barcode}
+          name={result.name}
+          value={result.value}
+          valueType={result.valueType}
+          expiryDate={result.expiryDate}
+          customerName={result.customerName}
+        />
 
         {/* Actions */}
-        <div className="space-y-2">
+        <div className="w-full space-y-2">
           <Link
             href="/"
             className="block w-full px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-semibold text-center"

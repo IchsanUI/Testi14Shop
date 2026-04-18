@@ -37,7 +37,7 @@ export default function CustomerPage() {
       setSubmitError(null);
     } catch (error) {
       setSubmitError(
-        error instanceof Error ? error.message : "Terjadi kesalahan"
+        error instanceof Error ? error.message : "Terjadi kesalahan",
       );
     }
   };
@@ -63,7 +63,8 @@ export default function CustomerPage() {
           </div>
           <h2 className="text-2xl font-black text-white mb-2">Terima Kasih!</h2>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">
-            Testimoni Anda berhasil dikirim. Kami akan memverifikasi dan menghubungi Anda via WhatsApp.
+            Testimoni Anda berhasil dikirim. Kami akan memverifikasi dan
+            menghubungi Anda via WhatsApp.
           </p>
           <div className="space-y-2">
             <button
@@ -90,7 +91,6 @@ export default function CustomerPage() {
 
   return (
     <div className="h-screen bg-black flex flex-col overflow-hidden">
-
       {/* ── HEADER ── */}
       <header className="flex-shrink-0 px-4 pt-4 pb-3">
         <div className="max-w-xl mx-auto flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function CustomerPage() {
             </svg>
             Kembali
           </Link>
-          <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+          {/* <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1">
             <svg
               className="w-3.5 h-3.5 text-yellow-400"
               fill="currentColor"
@@ -122,7 +122,7 @@ export default function CustomerPage() {
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
             <span className="text-xs font-semibold text-gray-400">14Group</span>
-          </div>
+          </div> */}
         </div>
       </header>
 
